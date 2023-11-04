@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+    <style>
+
+        body{
+<!--        background-color:#fafdff;-->
+        box-sizing:border-box;
+        }
+
+
+        nav{
+  position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+margin:0;
+width:100%;
+height:50px;
+box-shadow:3px 4px 10px grey;
+margin-bottom:30px;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+        .loginform{
+        margin-left:auto;
+        margin-right:auto;
+
+        background-color:#fcfcfc;
+        width:500px;
+        height:300px;
+        border: 2px solid #FFD099;
+        }
+
+        label{
+
+        font-size:20px;
+        color:#2B3499;
+        font-weight:bold;
+        padding-top:50px;
+        margin-left:30px;
+        }
+
+        input{
+
+            font-size:16px;
+            border:none;
+            border-bottom:2px solid #FFD099;
+            width:300px;
+            color:#2B3499;
+        }
+
+        input:focus{
+        outline:none;
+        border:none;
+          border-bottom:2px solid #FFD099;
+        }
+
+        .btn{
+        width:130px;
+        height:50px;
+        background-color:#FF6C22;
+        color:white;
+        margin-left:185px;
+
+        margin-top:70px;
+        }
+
+        .head{
+        color:#FF6C22;
+     text-align:center;
+
+        }
+
+
+        .container{
+
+        margin-top:100px;
+        }
+        h2{
+        color:orange;
+        }
+
+    </style>
+</head>
+<body>
+<nav>
+    <h2>HALODOC</h2>
+</nav>
+
+<div class="container">
+    <h2 class="head">Login</h2>
+<div class="loginform">
+<form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <input type="submit" value="Login" class="btn">
+</form>
+</div>
+
+
+</div>
+<div id="response"></div>
+
+<script>
+        document.getElementById("loginForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const data = {
+                username: username,
+                password: password
+            };
+
+            fetch('http://localhost:8090/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.jwtToken) {
+                    // Store the JWT token for further use
+                    localStorage.setItem('jwtToken', data.jwtToken);
+<!--                    document.getElementById("response").innerText = 'Login successful. Token stored.';-->
+                    window.location.href = 'http://localhost:8080/welcome';
+                } else {
+                    document.getElementById("response").innerText = 'Login failed. Please check your credentials.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("response").innerText = 'An error occurred.';
+            });
+        });
+    </script>
+</body>
+</html>
